@@ -15,12 +15,46 @@
         "level": "alpha",
         "patch": 0
       }
-    }
+    },
+    "timestamp": "2018-12-05T16:02:06+11:00"
   },
   "software": {
     "base": {
+      "name": "ipython_r",
+      "inherit": "https://raw.githubusercontent.com/EnginesBlueprints/ipython3_notebook/master/blueprint.json",
+      "framework": "python",
       "deployment_type": "web",
-      "http_protocol": "https_and_http"
-    }
+      "http_protocol": "https_only",
+      "memory": {
+        "required": 256,
+        "recommended": 512
+      }
+    },
+    "system_packages": [
+      {
+        "package": "r-base"
+      },
+      {
+        "package": "r-cran-energy"
+      },
+      {
+        "package": "r-cran-modeltool"
+      },
+      {
+        "package": "r-cran-rjags"
+      },
+      {
+        "package": "r-cran-robustbas"
+      },
+      {
+        "package": "r-cran-spatial"
+      },
+      {
+        "package": "r-cran-statmod"
+      },
+      {
+        "package": "r-cran-zelig"
+      }
+    ]
   }
 }
