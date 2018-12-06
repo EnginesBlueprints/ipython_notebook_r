@@ -16,7 +16,7 @@
         "patch": 0
       }
     },
-    "timestamp": "2018-12-05T16:08:55+11:00"
+    "timestamp": "2018-12-06T14:29:20+11:00"
   },
   "software": {
     "base": {
@@ -33,7 +33,7 @@
     "scripts": {
       "start": {
         "language": "sh",
-        "content": "#!/bin/sh\r\nsleep 500\r\nif ! test -f /home/app/.have_profile\r\n then\r\n pip3 install --upgrade pip\r\n  /home/app/.local/bin/pip3 install -U jsonschema --user\r\n  /home/app/.local/bin/pip3 install \"ipython[notebook]\" --user\r\n  /home/app/.local/bin/ipython3 profile create nbserver\r\n  touch /home/app/.have_profile\r\n  cd /home/app\r\n  \r\n  if test -f /home/app/modules\r\n   then\r\n    for module in `cat /home/app/modules`\r\n     do\r\n       pip3 install $module --user\r\n     done\r\n  fi\r\n\r\n  /home/app/.local/bin/ipython3 profile create nbserver\r\n\r\n  pass=`echo \"from IPython.lib import passwd\r\n  passwd('_Engines_Environment(notebook_password)')\r\n  exit() \" | /home/app/.local/bin/ipython3  --no-confirm-exit --no-color-info --no-pprint --colors=NoColor |grep sha1 | sed \"/.*sha/s//\\'sha/\"`\r\n  cat ~/.ipython/profile_nbserver/ipython_notebook_config.py | sed \"/^# c.NotebookApp.password.*/s//c.NotebookApp.password=$pass/\" > /tmp/confg\r\n  cp /tmp/confg ~/.ipython/profile_nbserver/ipython_notebook_config.py\r\n  echo -n pass > /home/app/.pass\r\nelse\r\n pass=`cat /home/app/.pass`\r\nfi\r\nPID_FILE=/tmp/ipython_notebook.pid\r\nexport PID_FILE\r\n. /home/engines/functions/system_functions.sh\r\nhost=`hostname`\r\nip=`grep $Hostname /etc/hosts |cut -f1 `\r\nresult=`/home/app/.local/bin/jupyter-notebook   --ip=$ip --NotebookApp.password=$pass --config ~/.ipython/profile_nbserver/ipython_notebook_config.py &`\r\npid=$!\r\n\r\necho $result\r\n\r\necho $result |grep token= > /tmp/first_run_url\r\n\r\necho $pid >$PID_FILE\r\nstartup_complete\r\nwait\r\nshutdown_complete\r\nsleep 500\r\nexit\r\n"
+        "content": "#!/bin/sh\r\n\r\nif ! test -f /home/app/.have_profile\r\n then\r\n pip3 install --upgrade pip\r\n  /home/app/.local/bin/pip3 install -U jsonschema --user\r\n  /home/app/.local/bin/pip3 install \"ipython[notebook]\" --user\r\n  /home/app/.local/bin/ipython3 profile create nbserver\r\n  touch /home/app/.have_profile\r\n  cd /home/app\r\n  \r\n  if test -f /home/app/modules\r\n   then\r\n    for module in `cat /home/app/modules`\r\n     do\r\n       pip3 install $module --user\r\n     done\r\n  fi\r\n\r\n  /home/app/.local/bin/ipython3 profile create nbserver\r\n\r\n  pass=`echo \"from IPython.lib import passwd\r\n  passwd('_Engines_Environment(notebook_password)')\r\n  exit() \" | /home/app/.local/bin/ipython3  --no-confirm-exit --no-color-info --no-pprint --colors=NoColor |grep sha1 | sed \"/.*sha/s//\\'sha/\"`\r\n  cat ~/.ipython/profile_nbserver/ipython_notebook_config.py | sed \"/^# c.NotebookApp.password.*/s//c.NotebookApp.password=$pass/\" > /tmp/confg\r\n  cp /tmp/confg ~/.ipython/profile_nbserver/ipython_notebook_config.py\r\n  echo -n pass > /home/app/.pass\r\n  sleep 500\r\nelse\r\n pass=`cat /home/app/.pass`\r\nfi\r\nPID_FILE=/tmp/ipython_notebook.pid\r\nexport PID_FILE\r\n. /home/engines/functions/system_functions.sh\r\nhost=`hostname`\r\nip=`grep $Hostname /etc/hosts |cut -f1 `\r\nresult=`/home/app/.local/bin/jupyter-notebook   --ip=$ip --NotebookApp.password=$pass --config ~/.ipython/profile_nbserver/ipython_notebook_config.py &`\r\npid=$!\r\n\r\necho $result\r\n\r\necho $result |grep token= > /tmp/first_run_url\r\n\r\necho $pid >$PID_FILE\r\nstartup_complete\r\nwait\r\nshutdown_complete\r\nsleep 500\r\nexit\r\n"
       }
     },
     "system_packages": [
@@ -60,6 +60,15 @@
       },
       {
         "package": "r-cran-zelig"
+      },
+      {
+        "package": "r-cran-rcpp"
+      }
+    ],
+    "template_files": [
+      {
+        "path": "engines/templates/first_run_expect",
+        "content": "\r\nduring install\r\ninstall.packages(c('crayon', 'pbdZMQ', 'devtools'))\r\ndevtools::install_github(paste0('IRkernel/', c('repr', 'IRdisplay', 'IRkernel')))\r\n"
       }
     ]
   }
